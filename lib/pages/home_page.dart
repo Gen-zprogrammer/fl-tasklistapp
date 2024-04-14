@@ -20,9 +20,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoaded = true;
     });
+      try {
     final model = await TaskRemoteDatasource().getTasks();
     tasks = model.data;
-
+  } catch (e) {
+    print('ERROR DI getTask $e');
+  }
     setState(() {
       isLoaded = false;
     });
@@ -38,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Task List',
           style: TextStyle(color: Colors.white),
@@ -61,7 +65,8 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const DetailTaskPage(),
+                        builder: (context) =>
+                            DetailTaskPage(task: tasks[index]),
                       ),
                     );
                   },
@@ -76,13 +81,14 @@ class _HomePageState extends State<HomePage> {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const AddTaskPage(),
             ),
           );
+          getTasks();
         },
         child: const Icon(Icons.add),
       ),

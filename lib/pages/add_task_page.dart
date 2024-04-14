@@ -1,3 +1,5 @@
+import 'package:fl_tasklist_app/data/datasource/task_remote_datasource.dart';
+import 'package:fl_tasklist_app/data/models/add_task_request_model.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -48,8 +50,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
           const SizedBox(
             height: 16.0,
           ),
-          ElevatedButton(
-            onPressed: () {
+           ElevatedButton(
+            onPressed: () async {
+              final model = AddTaskRequestModel(
+                data: Data(
+                    title: titlecontroller.text,
+                    description: descriptioncontroller.text),
+              );
+              final response = await TaskRemoteDatasource().addTask(model);
               Navigator.pop(context);
             },
             child: const Text('Add'),
